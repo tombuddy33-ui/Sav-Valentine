@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>For Sav ❤️</title>
+  <title>For Sav 💘</title>
 
   <style>
     :root{
@@ -11,8 +11,8 @@
       --bg2:#ee9ca7;
       --card:#ffffffcc;
       --text:#1f2937;
-      --blue:#3b82f6;
-      --blue-dark:#2563eb;
+      --pink:#ec4899;
+      --pink-dark:#db2777;
       --red:#ef4444;
     }
 
@@ -40,16 +40,23 @@
       border: 1px solid rgba(255,255,255,0.6);
     }
 
-    .image{
-      font-size:48px;
-      margin-bottom:12px;
-      animation: float 3s ease-in-out infinite;
-      filter: drop-shadow(0 10px 18px rgba(239,68,68,0.18));
+    /* Animated bear */
+    .bear{
+      display:flex;
+      justify-content:center;
+      margin-bottom:16px;
     }
 
-    @keyframes float{
+    .bear img{
+      width:80px;
+      height:auto;
+      animation: bear-bounce 2.4s ease-in-out infinite;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,0.15));
+    }
+
+    @keyframes bear-bounce{
       0%,100%{ transform: translateY(0); }
-      50%{ transform: translateY(-6px); }
+      50%{ transform: translateY(-10px); }
     }
 
     h1{
@@ -71,7 +78,7 @@
     .btn{
       border:none;
       cursor:pointer;
-      padding: 14px 26px;
+      padding: 14px 28px;
       border-radius:999px;
       font-size:18px;
       font-weight:750;
@@ -80,16 +87,18 @@
       touch-action: manipulation;
     }
 
+    /* YES button (pink) */
     #yes{
-      background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+      background: linear-gradient(135deg, var(--pink), var(--pink-dark));
       color:white;
       position:absolute;
       left:50%;
       top:60%;
       transform: translate(-140%, -50%);
-      box-shadow: 0 14px 30px rgba(59,130,246,0.35);
+      box-shadow: 0 14px 30px rgba(236,72,153,0.35);
     }
 
+    /* NO button */
     #no{
       background: var(--red);
       color:white;
@@ -130,7 +139,6 @@
       margin: 0 0 12px;
     }
 
-    /* Reveal box */
     .reveal{
       margin: 12px 0 18px;
       padding: 16px 14px;
@@ -142,23 +150,7 @@
       text-align:left;
     }
 
-    .reveal::before{
-      content:"";
-      position:absolute;
-      inset:-40px;
-      background: radial-gradient(circle at 30% 20%, rgba(239,68,68,0.16), transparent 60%);
-      filter: blur(14px);
-      animation: shimmer 2.8s ease-in-out infinite;
-      pointer-events:none;
-    }
-
-    @keyframes shimmer{
-      0%,100%{ opacity:0.7; transform: translateY(0); }
-      50%{ opacity:1; transform: translateY(-6px); }
-    }
-
     .line{
-      position:relative;
       opacity:0;
       transform: translateY(10px);
       filter: blur(2px);
@@ -178,26 +170,23 @@
       font-size:15px;
       margin-top: 12px;
     }
-
-    .music-note{
-      margin-top: 8px;
-      font-size: 12px;
-      opacity: 0.65;
-    }
   </style>
 </head>
 
 <body>
 
-  <!-- IMPORTANT: upload garden-kisses.mp3 to the same folder as index.html -->
+  <!-- Background Music -->
   <audio id="bg-music" src="garden-kisses.mp3" preload="auto" loop></audio>
 
   <div class="card">
-    <div class="image">❤️</div>
-    <h1>Sav, will you be my Valentine?</h1>
+    <div class="bear">
+      <img src="bear.gif" alt="Bear holding flowers">
+    </div>
+
+    <h1>Sav, can I be your Valentine?</h1>
 
     <div class="play-area" id="area">
-      <button class="btn" id="yes">Yes 💙</button>
+      <button class="btn" id="yes">Yes</button>
       <button class="btn" id="no">No</button>
     </div>
   </div>
@@ -215,7 +204,6 @@
       </div>
 
       <button class="btn" id="close" style="background:#111;color:#fff;">Close</button>
-      <div class="music-note">(If music doesn’t start, tap once anywhere.)</div>
     </div>
   </div>
 
@@ -229,54 +217,51 @@
 
     let yesScale = 1;
 
-    function moveNoButton() {
+    function moveNoButton(){
       const a = area.getBoundingClientRect();
       const n = noBtn.getBoundingClientRect();
       const pad = 12;
-
       const x = Math.random() * (a.width - n.width - pad);
       const y = Math.random() * (a.height - n.height - pad);
-
       noBtn.style.left = x + "px";
       noBtn.style.top  = y + "px";
       noBtn.style.transform = "none";
     }
 
-    function growYesButton() {
+    function growYesButton(){
       yesScale = Math.min(yesScale + 0.12, 2.3);
       yesBtn.style.transform = `translate(-140%, -50%) scale(${yesScale})`;
     }
 
-    function startMusic() {
+    function startMusic(){
       music.volume = 0.65;
       const p = music.play();
       if (p && typeof p.catch === "function") p.catch(() => {});
     }
 
-    function revealLines() {
+    function revealLines(){
       const order = ["l1","l2","l3","l4","sig"].map(id => document.getElementById(id));
       order.forEach(el => el.classList.remove("show"));
-
       setTimeout(() => order[0].classList.add("show"), 250);
       setTimeout(() => order[1].classList.add("show"), 750);
       setTimeout(() => order[2].classList.add("show"), 1250);
-      setTimeout(() => order[3].classList.add("show"), 3000);  // final line after 3s
+      setTimeout(() => order[3].classList.add("show"), 3000);
       setTimeout(() => order[4].classList.add("show"), 3500);
     }
 
-    area.addEventListener("mousemove", (e) => {
+    area.addEventListener("mousemove", e => {
       const r = noBtn.getBoundingClientRect();
       const d = Math.hypot(
-        e.clientX - (r.left + r.width / 2),
-        e.clientY - (r.top + r.height / 2)
+        e.clientX - (r.left + r.width/2),
+        e.clientY - (r.top + r.height/2)
       );
-      if (d < 110) {
+      if (d < 110){
         moveNoButton();
         growYesButton();
       }
     });
 
-    noBtn.addEventListener("pointerdown", (e) => {
+    noBtn.addEventListener("pointerdown", e => {
       e.preventDefault();
       moveNoButton();
       growYesButton();
@@ -288,21 +273,20 @@
       revealLines();
     });
 
-    // Retry music on any tap if iOS blocks the first attempt
     document.addEventListener("pointerdown", () => {
       if (overlay.style.display === "grid" && music.paused) startMusic();
-    }, { passive: true });
+    }, { passive:true });
 
     closeBtn.addEventListener("click", () => {
       overlay.style.display = "none";
-      // Uncomment if you want music to stop on close:
-      // music.pause(); music.currentTime = 0;
     });
 
     requestAnimationFrame(moveNoButton);
   </script>
 
 </body>
+</html>
+
 </html>
 
 
