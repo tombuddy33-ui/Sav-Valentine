@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>For Sav 💙</title>
+  <title>For Sav 💘</title>
 
   <style>
     :root {
-      --bg1:#eef4ff;
-      --bg2:#d9e4ff;
+      --bg1:#ffdde1;   /* pink */
+      --bg2:#ee9ca7;   /* deeper pink */
       --card:#ffffffcc;
       --text:#1f2937;
       --blue:#3b82f6;
@@ -37,12 +37,14 @@
       padding: 34px 26px;
       text-align: center;
       box-shadow: 0 25px 60px rgba(0,0,0,0.12);
+      border: 1px solid rgba(255,255,255,0.6);
     }
 
     .image {
-      font-size: 46px;
+      font-size: 48px;
       margin-bottom: 12px;
       animation: float 3s ease-in-out infinite;
+      filter: drop-shadow(0 10px 18px rgba(239,68,68,0.18));
     }
 
     @keyframes float {
@@ -51,22 +53,17 @@
     }
 
     h1 {
-      margin: 0 0 10px;
+      margin: 0 0 18px;
       font-size: 34px;
-      font-weight: 700;
-    }
-
-    p {
-      margin: 0 0 22px;
-      font-size: 16px;
-      opacity: 0.85;
+      font-weight: 750;
+      letter-spacing: -0.3px;
     }
 
     .play-area {
       position: relative;
       height: 240px;
       border-radius: 20px;
-      background: linear-gradient(180deg, #ffffff, #f3f6ff);
+      background: linear-gradient(180deg, #ffffff, #fff1f4);
       border: 1px dashed rgba(0,0,0,0.15);
       overflow: hidden;
     }
@@ -77,9 +74,10 @@
       padding: 14px 26px;
       border-radius: 999px;
       font-size: 18px;
-      font-weight: 700;
+      font-weight: 750;
       transition: transform 150ms ease, box-shadow 150ms ease;
       user-select: none;
+      touch-action: manipulation;
     }
 
     #yes {
@@ -109,6 +107,7 @@
       display: none;
       place-items: center;
       background: rgba(0,0,0,0.4);
+      padding: 16px;
     }
 
     .modal {
@@ -133,11 +132,11 @@
 
     /* Line reveal */
     .reveal {
-      margin: 12px 0 20px;
+      margin: 12px 0 18px;
       padding: 16px 14px;
       border-radius: 18px;
-      background: linear-gradient(180deg, #f7faff, #eef3ff);
-      border: 1px solid rgba(59,130,246,0.15);
+      background: linear-gradient(180deg, #fff7f8, #ffecef);
+      border: 1px solid rgba(239,68,68,0.14);
       position: relative;
       overflow: hidden;
     }
@@ -146,7 +145,7 @@
       content: "";
       position: absolute;
       inset: -40px;
-      background: radial-gradient(circle at 30% 20%, rgba(59,130,246,0.18), transparent 60%);
+      background: radial-gradient(circle at 30% 20%, rgba(239,68,68,0.16), transparent 60%);
       filter: blur(14px);
       animation: shimmer 2.8s ease-in-out infinite;
       pointer-events: none;
@@ -174,21 +173,26 @@
     }
 
     .signature {
-      opacity: 0.7;
-      margin-top: 6px;
+      margin-top: 12px;
+      opacity: 0.75;
       font-size: 15px;
+    }
+
+    .music-note {
+      margin-top: 8px;
+      font-size: 12px;
+      opacity: 0.65;
     }
   </style>
 </head>
 <body>
 
-  <!-- Background Music -->
-  <audio id="bg-music" src="Garden Kisses.mp3" loop></audio>
+  <!-- Background Music (rename your file to garden-kisses.mp3) -->
+  <audio id="bg-music" src="garden-kisses.mp3" preload="auto" loop></audio>
 
   <div class="card">
-    <div class="image">💙</div>
+    <div class="image">❤️</div>
     <h1>Sav, will you be my Valentine?</h1>
-    <p>I had a feeling you’d say yes.</p>
 
     <div class="play-area" id="area">
       <button class="btn" id="yes">Yes 💙</button>
@@ -203,12 +207,14 @@
       <div class="reveal" id="reveal">
         <div class="line">Dinner’s ready at <strong>6:30</strong>.</div>
         <div class="line">Be ready by <strong>5:30</strong> — I got the rest.</div>
-        <div class="line">Get that dress ready 😏</div>
+        <div class="line">Get that dress ready my shay 😏</div>
         <div class="line" id="final-line">I can’t wait to see you.</div>
+
+        <div class="signature line" id="sig">— Tom</div>
       </div>
 
-      <div class="signature">— Tom</div>
       <button class="btn" id="close" style="background:#111;color:#fff;">Close</button>
+      <div class="music-note">(If the music doesn’t start, tap once anywhere.)</div>
     </div>
   </div>
 
@@ -240,6 +246,29 @@
       yesBtn.style.transform = `translate(-140%, -50%) scale(${yesScale})`;
     }
 
+    function startMusic() {
+      // iOS/Safari needs play() after a user gesture (the Yes click counts)
+      music.volume = 0.65;
+      const p = music.play();
+      if (p && typeof p.catch === "function") p.catch(() => {});
+    }
+
+    function revealLines() {
+      const lines = document.querySelectorAll("#reveal .line");
+      lines.forEach(l => l.classList.remove("show"));
+
+      // Reveal first three fairly quickly
+      setTimeout(() => lines[0].classList.add("show"), 250);
+      setTimeout(() => lines[1].classList.add("show"), 750);
+      setTimeout(() => lines[2].classList.add("show"), 1250);
+
+      // Final line specifically after 3 seconds
+      setTimeout(() => document.getElementById("final-line").classList.add("show"), 3000);
+
+      // Signature inside the same box, after the final line
+      setTimeout(() => document.getElementById("sig").classList.add("show"), 3500);
+    }
+
     area.addEventListener("mousemove", e => {
       const r = noBtn.getBoundingClientRect();
       const d = Math.hypot(
@@ -260,26 +289,25 @@
 
     yesBtn.addEventListener("click", () => {
       overlay.style.display = "grid";
-
-      // Start music
-      music.volume = 0.6;
-      music.play().catch(() => {});
-
-      const lines = document.querySelectorAll("#reveal .line");
-      lines.forEach(l => l.classList.remove("show"));
-
-      lines.forEach((line, i) => {
-        const delay = i === lines.length - 1 ? 3000 : 250 + i * 500;
-        setTimeout(() => line.classList.add("show"), delay);
-      });
+      startMusic();
+      revealLines();
     });
+
+    // Fallback: if music got blocked, any tap will retry
+    document.addEventListener("pointerdown", () => {
+      if (overlay.style.display === "grid" && music.paused) startMusic();
+    }, { passive: true });
 
     closeBtn.addEventListener("click", () => {
       overlay.style.display = "none";
+      // Optional: stop music when closing (comment out if you want it to keep playing)
+      // music.pause(); music.currentTime = 0;
     });
 
     requestAnimationFrame(moveNoButton);
   </script>
 
 </body>
+</html>
+
 </html>
